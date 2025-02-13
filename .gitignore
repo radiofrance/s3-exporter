@@ -1,3 +1,4 @@
-.idea
+.idea/
+dist/
 .golangci.yml
 golangci-lint-report.xml
