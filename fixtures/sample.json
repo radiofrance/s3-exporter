@@ -1,0 +1,32 @@
+{
+  "settings": {
+    "check_interval": 300
+  },
+  "profiles": {
+    "tenant1": {
+      "access_key_id": "xxxxxxxxxxxxxxxx",
+      "secret_access_key": "xxxxxxxxxxxxxxxx",
+      "region": "eu-west-1"
+    },
+    "tenant2": {
+      "access_key_id": "xxxxxxxxxxxxxxxx",
+      "secret_access_key": "xxxxxxxxxxxxxxxx",
+      "region": "eu-west-3"
+    }
+  },
+  "buckets": [
+    {
+      "name": "my-bucket-on-tenant1",
+      "prefix": "",
+      "profile": "tenant1"
+    },
+    {
+      "name": "my-bucket-on-tenant2",
+      "prefix": "/path/to/prefix",
+      "profile": "tenant2",
+      "metrics": [
+        "bucket_objects_total_size_go"
+      ]
+    }
+  ]
+}

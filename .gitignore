@@ -1,0 +1,3 @@
+.idea
+.golangci.yml
+golangci-lint-report.xml
