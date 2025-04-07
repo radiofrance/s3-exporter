@@ -1,6 +1,6 @@
 module github.com/radiofrance/s3-exporter
 
-go 1.23.4
+go 1.24.2
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.29.13
