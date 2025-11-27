@@ -11,7 +11,9 @@
     "tenant2": {
       "access_key_id": "xxxxxxxxxxxxxxxx",
       "secret_access_key": "xxxxxxxxxxxxxxxx",
-      "region": "eu-west-3"
+      "region": "eu-west-3",
+      "endpoint": "http://localhost:3900/",
+      "use_path_style": false
     }
   },
   "buckets": [
