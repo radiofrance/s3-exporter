@@ -20,12 +20,15 @@ func (s3Cfg S3Config) Collect() {
 			s3Cfg.Profiles[exporter.Profile].AwsSecretAccessKey,
 			"",
 		)
+
 		awsConfig, err := config.LoadDefaultConfig(context.Background())
 		if err != nil {
 			errorf("Failed to load AWS configuration on exporter %s/%s: %v",
 				exporter.Bucket, exporter.Prefix, err)
+
 			continue
 		}
+
 		awsConfig.Credentials = creds
 
 		if len(exporter.AwsRegion) > 0 {
@@ -33,34 +36,47 @@ func (s3Cfg S3Config) Collect() {
 		} else {
 			awsConfig.Region = s3Cfg.Profiles[exporter.Profile].AwsRegion
 		}
+
 		infof("S3 Bucket is %s/%s", exporter.Bucket, exporter.Prefix)
-		var bucketObjectsCountTotal int
-		var bucketObjectsSizeTotal int64
-		var lastModified time.Time
+
+		var (
+			bucketObjectsCountTotal int
+			bucketObjectsSizeTotal  int64
+			lastModified            time.Time
+		)
+
 		svc := s3.NewFromConfig(awsConfig)
 		query := &s3.ListObjectsV2Input{
 			Bucket: &exporter.Bucket,
 			Prefix: &exporter.Prefix,
 		}
+
 		paginateReq := s3.NewListObjectsV2Paginator(svc, query)
 		for paginateReq.HasMorePages() {
 			page, err := paginateReq.NextPage(context.Background())
+
 			s3TotalRequestCount.With(prometheus.Labels{"bucket": exporter.Bucket, "prefix": exporter.Prefix}).Inc()
+
 			if err != nil {
 				errorf(
 					"Failed to call paginated request on s3 list Objects for %s/%s: %v",
 					exporter.Bucket, exporter.Prefix, err)
+
 				continue
 			}
+
 			for _, item := range page.Contents {
 				bucketObjectsCountTotal++
+
 				if item.Size == nil {
 					continue
 				}
+
 				bucketObjectsSizeTotal += *item.Size
 				if item.LastModified == nil {
 					continue
 				}
+
 				if item.LastModified.After(lastModified) {
 					lastModified = *item.LastModified
 				}
@@ -102,5 +118,6 @@ func (s3Cfg S3Config) Collect() {
 			}
 		}
 	}
+
 	slog.Info("End of Collection")
 }

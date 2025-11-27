@@ -33,7 +33,8 @@ clean: ## Clean tmp files
 
 qa: lint ## Run all Q.A.
 
-LINT_CONFIG_VERSION = v1.0.2
+# renovate: datasource=github-tags depName=radiofrance/lint-config
+LINT_CONFIG_VERSION = v1.1.1
 
 lint:
 	curl -o .golangci.yml "https://raw.githubusercontent.com/radiofrance/lint-config/${LINT_CONFIG_VERSION}/.golangci.yml"
