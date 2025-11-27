@@ -6,9 +6,15 @@
   "packageRules": [
     {
       "description": "Update Go directives in go.mod files",
-      "matchManagers": ["gomod"],
-      "matchDepNames": ["go"],
-      "matchDepTypes": ["golang"],
+      "matchManagers": [
+        "gomod"
+      ],
+      "matchDepNames": [
+        "go"
+      ],
+      "matchDepTypes": [
+        "golang"
+      ],
       "rangeStrategy": "bump"
     },
     {
@@ -32,9 +38,9 @@
     {
       "description": "Update variables in Makefiles and GitHub Actions files (https://docs.renovatebot.com/presets-customManagers/#custommanagersmakefileversions)",
       "customType": "regex",
-      "fileMatch": [
-        "(^|/)Makefile$",
-        "^\\.github/workflows/.*\\.ya?ml"
+      "managerFilePatterns": [
+        "/(^|/)Makefile$/",
+        "/^\\.github/workflows/.*\\.ya?ml/"
       ],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)\\s+[A-Za-z0-9_-]*\\s*[:=]\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
