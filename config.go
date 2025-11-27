@@ -41,14 +41,17 @@ type Exporter struct {
 
 func initS3Exporter() (*S3Config, error) {
 	var s3Config S3Params
+
 	err := envconfig.Process("", &s3Config)
 	if err != nil {
 		return nil, fmt.Errorf("unable to process s3 envconfig : %w", err)
 	}
 
 	jsonFile, err := os.Open(s3Config.ExportersJSONFilePath)
+
 	defer func() {
-		if err := jsonFile.Close(); err != nil {
+		err := jsonFile.Close()
+		if err != nil {
 			errorf("can't close %s: %v", s3Config.ExportersJSONFilePath, err)
 		}
 	}()
@@ -63,6 +66,7 @@ func initS3Exporter() (*S3Config, error) {
 	}
 
 	var s3w S3Config
+
 	err = json.Unmarshal(byteValue, &s3w)
 	if err != nil {
 		return nil, fmt.Errorf("error Unmarshalling the bytes to struct: %w", err)

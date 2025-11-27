@@ -25,13 +25,16 @@ func main() {
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
+
 	var waitGroup sync.WaitGroup
 	waitGroup.Add(2)
 
 	// Run our server in a goroutine so that it doesn't block.
 	go func() {
 		defer waitGroup.Done()
-		if err := srvMetrics.ListenAndServe(); err != nil {
+
+		err := srvMetrics.ListenAndServe()
+		if err != nil {
 			if errors.Is(err, http.ErrServerClosed) {
 				slog.Info("Metrics server closed")
 			} else {
@@ -42,6 +45,7 @@ func main() {
 
 	// Collect S3 Metrics in a goroutine
 	s3wCollectCtx, s3wCollectCancel := context.WithCancel(context.Background())
+
 	go func() {
 		defer waitGroup.Done()
 
@@ -50,10 +54,12 @@ func main() {
 			errorf("Failed to get exporters from json file: %v", err)
 			return
 		}
+
 		tck := time.NewTicker(time.Duration(s3w.Settings.CheckInterval) * time.Second)
 		defer tck.Stop()
 
 		s3w.Collect() //nolint:contextcheck
+
 		for {
 			select {
 			case <-tck.C:
@@ -69,7 +75,9 @@ func main() {
 	signal.Notify(c, syscall.SIGTERM)
 	<-c
 	s3wCollectCancel()
+
 	_ = srvMetrics.Shutdown(context.Background())
+
 	slog.Info("Shutting down")
 	waitGroup.Wait()
 	os.Exit(0)
