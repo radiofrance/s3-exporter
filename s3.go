@@ -44,7 +44,7 @@ func (s3Cfg S3Config) Collect() {
 
 		infof("S3 Bucket is %s/%s", exporter.Bucket, exporter.Prefix)
 
-    var (
+		var (
 			bucketObjectsCountTotal int
 			bucketObjectsSizeTotal  int64
 			lastModified            time.Time
