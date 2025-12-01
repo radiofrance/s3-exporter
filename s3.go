@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/credentials"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -31,6 +32,10 @@ func (s3Cfg S3Config) Collect() {
 
 		awsConfig.Credentials = creds
 
+		if len(s3Cfg.Profiles[exporter.Profile].AwsEndpoint) > 0 {
+			awsConfig.BaseEndpoint = aws.String(s3Cfg.Profiles[exporter.Profile].AwsEndpoint)
+		}
+
 		if len(exporter.AwsRegion) > 0 {
 			awsConfig.Region = exporter.AwsRegion
 		} else {
@@ -45,7 +50,10 @@ func (s3Cfg S3Config) Collect() {
 			lastModified            time.Time
 		)
 
-		svc := s3.NewFromConfig(awsConfig)
+		svc := s3.NewFromConfig(awsConfig, func(o *s3.Options) {
+			o.UsePathStyle = s3Cfg.Profiles[exporter.Profile].UsePathStyle
+		})
+
 		query := &s3.ListObjectsV2Input{
 			Bucket: &exporter.Bucket,
 			Prefix: &exporter.Prefix,

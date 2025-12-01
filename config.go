@@ -27,6 +27,8 @@ type Profile struct {
 	AwsAccessKeyID     string `json:"access_key_id"     required:"true"`
 	AwsSecretAccessKey string `json:"secret_access_key" required:"true"`
 	AwsRegion          string `json:"region"            required:"true"`
+	AwsEndpoint        string `json:"endpoint"          required:"false"`
+	UsePathStyle       bool   `json:"use_path_style"    required:"false"`
 }
 
 type Exporter struct {
