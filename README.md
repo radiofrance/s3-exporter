@@ -4,12 +4,20 @@ __Situation:__ Collecting metrics from S3 Buckets in Prometheus.
 
 __Solution:__ An exporter that can report for any needed metrics from S3 Buckets such as the last modified date for objects in a bucket that match a given prefix for instance.
 
-__Export Variable:__ To make it works successfully, you have to export these environment variable before :
-- AWS_REGION=eu-west-1
-- AWS_ACCESS_KEY_ID= ...
-- AWS_SECRET_ACCESS_KEY= ...
+## AWS credentials
 
-see the AWS SDK FOR GO DOC FILE : https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/configuring-sdk.html
+Each bucket references a `profile` from the configuration file:
+
+- if the profile defines both `access_key_id` and `secret_access_key`, these static keys are used;
+- otherwise, the [AWS SDK for Go v2 default credentials chain](https://docs.aws.amazon.com/sdk-for-go/v2/developer-guide/configure-gosdk.html#specifying-credentials)
+  is used: `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` environment variables, shared config files,
+  IAM Roles for Service Accounts (IRSA), EKS Pod Identity, EC2 instance role...
+
+The region is taken from the bucket's `region`, then the profile's `region`, then the default chain
+(`AWS_REGION`...).
+
+The only S3 call made is a paginated `ListObjectsV2`: the `s3:ListBucket` permission on each
+monitored bucket is enough.
 
 ## Configuration
 
