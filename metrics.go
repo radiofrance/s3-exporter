@@ -5,9 +5,14 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
+const (
+	labelBucket = "bucket"
+	labelPrefix = "prefix"
+)
+
 var (
 	allMetricsToCollect = []string{"latest_file_posix_timestamp", "bucket_objects", "bucket_objects_total_size_go"}
-	metricsLabels       = []string{"bucket", "prefix"}
+	metricsLabels       = []string{labelBucket, labelPrefix}
 	metricsNamespace    = "s3"
 	metricsSubsystem    = "exporter"
 )
